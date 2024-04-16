@@ -18,7 +18,7 @@ const App = () => {
   return (
     <Router>
       <div className="container">
-        <h2>React Rotuer Demo</h2>
+        <h2>Currency Exchange</h2>
         <nav>
           <ul>
             <li>
