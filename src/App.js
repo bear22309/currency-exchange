@@ -3,15 +3,15 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import './App.css';
 
 const Home = () => {
-  return <h2>Home</h2>;
+  return <h2>Currency</h2>;
 }
 
 const About = () => {
-  return <h2>About</h2>;
+  return <h2>Currency</h2>;
 }
 
 const Contact = () => {
-  return <h2>Contact</h2>;
+  return <h2>Currency</h2>;
 }
 
 const App = () => {
@@ -22,13 +22,13 @@ const App = () => {
         <nav>
           <ul>
             <li>
-              <Link to="/">Home</Link>
+              <Link to="/">Currency</Link>
             </li>
             <li>
-              <Link to="/about/">About</Link>
+              <Link to="/about/">Currency</Link>
             </li>
             <li>
-              <Link to="/contact/">Contact</Link>
+              <Link to="/contact/">Currency</Link>
             </li>
           </ul>
         </nav>
