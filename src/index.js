@@ -53,3 +53,26 @@ const currencies = {
 };
 
 export default currencies;
+
+fetch('https://api.frankfurter.app/latest?from=USD')
+    .then(response => response.json())
+    .then(data => {
+        const exchangeRates = data.rates;
+        console.log(exchangeRates);
+        
+        // Now you can use the exchange rates object to access individual rates
+        // For example, to get the exchange rate for EUR:
+        const eurRate = exchangeRates['EUR'];
+        console.log('Exchange rate for EUR:', eurRate);
+        
+        // You can also loop through all currency codes and their corresponding rates
+        for (const currencyCode in exchangeRates) {
+            const rate = exchangeRates[currencyCode];
+            console.log(`${currencyCode}: ${rate}`);
+            
+            // Here, you can display the exchange rates on the webpage or perform any other operations
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching exchange rates:', error);
+    });
