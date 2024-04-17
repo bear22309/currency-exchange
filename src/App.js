@@ -22,14 +22,12 @@ const App = () => {
         <nav>
           <ul>
             <li>
-              <Link to="/">Currency</Link>
+            <button onclick="alert('Button clicked!')">Current currency</button>
             </li>
             <li>
-              <Link to="/about/">Currency</Link>
+            <button onclick="alert('Button clicked!')">Current currency</button>
             </li>
-            <li>
-              <Link to="/contact/">Currency</Link>
-            </li>
+            
           </ul>
         </nav>
         <Route path="/" exact component={Home} />
