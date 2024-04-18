@@ -1,88 +1,76 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-ReactDOM.render(
+createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 );
 
-fetch('api.frankfurter.app')
+
+fetch('https://api.frankfurter.app/currencies')
   .then(response => response.json())
   .then(data => {
-    const exchangeRates = data.rates;
-    const currencies = {
-      AUD: "Australian Dollar",
-      BGN: "Bulgarian Lev",
-      BRL: "Brazilian Real",
-      CAD: "Canadian Dollar",
-      CHF: "Swiss Franc",
-      CNY: "Chinese Renminbi Yuan",
-      CZK: "Czech Koruna",
-      DKK: "Danish Krone",
-      EUR: "Euro",
-      GBP: "British Pound",
-      HKD: "Hong Kong Dollar",
-      HUF: "Hungarian Forint",
-      IDR: "Indonesian Rupiah",
-      ILS: "Israeli New Sheqel",
-      INR: "Indian Rupee",
-      ISK: "Icelandic Króna",
-      JPY: "Japanese Yen",
-      KRW: "South Korean Won",
-      MXN: "Mexican Peso",
-      MYR: "Malaysian Ringgit",
-      NOK: "Norwegian Krone",
-      NZD: "New Zealand Dollar",
-      PHP: "Philippine Peso",
-      PLN: "Polish Złoty",
-      RON: "Romanian Leu",
-      SEK: "Swedish Krona",
-      SGD: "Singapore Dollar",
-      THB: "Thai Baht",
-      TRY: "Turkish Lira",
-      USD: "United States Dollar",
-      ZAR: "South African Rand",
-    };
+    console.log('API Response:', data);
+    const currencies = data;
 
-    const host = 'api.frankfurter.app';
-    function fetchExchangeRates(fromCurrency, toCurrency) {
-      return fetch(`https://${host}/latest?from=${fromCurrency}&to=${toCurrency}`)
-        .then(response => response.json())
-        .then(data => {
-          return data.rates[toCurrency];
-        })
-        .catch(error => {
-          console.error('Error fetching exchange rates:', error);
-          throw error; 
-        });
-    }
-    console.log (fetchExchangeRates(exchangeRates));
+    const fromCurrencySelect = document.getElementById("fromCurrency");
+    const toCurrencySelect = document.getElementById("toCurrency");
 
-    const exchangeRatesList = document.getElementById("exchangeRates");
-    for (const currency in currencies) {
-      const listItem = document.createElement("li");
-      listItem.textContent = `${currencies[currency]} (${currency}): ${exchangeRates[currency]}`;
-      exchangeRatesList.appendChild(listItem);
-    }
-
-    const baseCurrencySelect = document.getElementById("baseCurrency");
+    // Populate currency dropdowns
     for (const currency in currencies) {
       const option = document.createElement('option');
       option.value = currency;
       option.textContent = `${currency} (${currencies[currency]})`;
-      baseCurrencySelect.appendChild(option);
-    }    
+      fromCurrencySelect.appendChild(option.cloneNode(true));
+      toCurrencySelect.appendChild(option);
+    }
+
+    fromCurrencySelect.addEventListener('change', () => {
+      convertButton.disabled = false;
+    });
+    toCurrencySelect.addEventListener('change', () => {
+      convertButton.disabled = false;
+    });
+
+    const convertButton = document.getElementById("convertButton");
+    convertButton.addEventListener('click', () => {
+      const fromCurrency = fromCurrencySelect.value;
+      const toCurrency = toCurrencySelect.value;
+
+      fetchExchangeRates(fromCurrency, toCurrency)
+        .then(rate => {
+          const fromAmount = document.getElementById("fromAmount").value;
+          const toAmount = fromAmount * rate;
+          document.getElementById("toAmount").value = toAmount.toFixed(2);
+        })
+        .catch(error => {
+          console.error('Error fetching exchange rates:', error);
+          const exchangeRatesList = document.getElementById('exchangeRates');
+          exchangeRatesList.textContent = 'Error fetching exchange rates. Please try again later.';
+        });
+    });
   })
   .catch(error => {
-    console.error('Error fetching exchange rates:', error);
-    const exchangeRatesList = document.getElementById('exchangeRates');
-    exchangeRatesList.textContent = 'Error fetching exchange rates. Please try again later.';
+    console.error('Error fetching currencies:', error);
   });
 
+function fetchExchangeRates(fromCurrency, toCurrency) {
+  const host = 'api.frankfurter.app';
+  return fetch(`https://${host}/latest?from=${fromCurrency}&to=${toCurrency}`)
+    .then(response => response.json())
+    .then(data => {
+      return data.rates[toCurrency];
+    })
+    .catch(error => {
+      console.error('Error fetching exchange rates:', error);
+      throw error; 
+    });
+}
+
 reportWebVitals();
+
