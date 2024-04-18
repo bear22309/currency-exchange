@@ -67,7 +67,7 @@ fetch('https://api.frankfurter.app/latest?from=USD')
       option.value = currency;
       option.textContent = `${currency} (${currencies[currency]})`;
       baseCurrencySelect.appendChild(option);
-    }
+    }    
   })
   .catch(error => {
     console.error('Error fetching exchange rates:', error);
