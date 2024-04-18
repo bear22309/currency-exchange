@@ -5,17 +5,12 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-
 ReactDOM.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
   document.getElementById('root')
 );
-
-document.addEventListener("DOMContentLoaded", function() {
-  
-
 
 fetch('https://api.frankfurter.app/latest?from=USD')
   .then(response => response.json())
@@ -55,7 +50,6 @@ fetch('https://api.frankfurter.app/latest?from=USD')
       ZAR: "South African Rand",
     };
 
-   
     const exchangeRatesList = document.getElementById("exchangeRates");
     for (const currency in currencies) {
       const listItem = document.createElement("li");
@@ -63,7 +57,6 @@ fetch('https://api.frankfurter.app/latest?from=USD')
       exchangeRatesList.appendChild(listItem);
     }
 
-    
     const baseCurrencySelect = document.getElementById("baseCurrency");
     for (const currency in currencies) {
       const option = document.createElement('option');
@@ -77,6 +70,5 @@ fetch('https://api.frankfurter.app/latest?from=USD')
     const exchangeRatesList = document.getElementById('exchangeRates');
     exchangeRatesList.textContent = 'Error fetching exchange rates. Please try again later.';
   });
-});
 
 reportWebVitals();
