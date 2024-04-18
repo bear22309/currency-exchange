@@ -12,7 +12,7 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
-fetch('https://api.frankfurter.app/latest?from=USD')
+fetch('api.frankfurter.app')
   .then(response => response.json())
   .then(data => {
     const exchangeRates = data.rates;
@@ -49,6 +49,20 @@ fetch('https://api.frankfurter.app/latest?from=USD')
       USD: "United States Dollar",
       ZAR: "South African Rand",
     };
+
+    const host = 'api.frankfurter.app';
+    function fetchExchangeRates(fromCurrency, toCurrency) {
+      return fetch(`https://${host}/latest?from=${fromCurrency}&to=${toCurrency}`)
+        .then(response => response.json())
+        .then(data => {
+          return data.rates[toCurrency];
+        })
+        .catch(error => {
+          console.error('Error fetching exchange rates:', error);
+          throw error; 
+        });
+    }
+    console.log (fetchExchangeRates(exchangeRates));
 
     const exchangeRatesList = document.getElementById("exchangeRates");
     for (const currency in currencies) {
