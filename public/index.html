@@ -21,6 +21,9 @@
     </div>
     <div class="container">
       <h1>Exchange Rates</h1>
+      <label for="baseCurrency">Select Base Currency:</label>
+      <select id="baseCurrency"></select>
+
       <ul id="exchangeRates"></ul>
     </div>
 
@@ -29,125 +32,7 @@
       <a href="https://www.linkedin.com/feed/">LinkedIn</a>
     </footer>
 
-    <script>
-      const currencies = {
-        AUD: "Australian Dollar",
-        BGN: "Bulgarian Lev",
-        BRL: "Brazilian Real",
-        CAD: "Canadian Dollar",
-        CHF: "Swiss Franc",
-        CNY: "Chinese Renminbi Yuan",
-        CZK: "Czech Koruna",
-        DKK: "Danish Krone",
-        EUR: "Euro",
-        GBP: "British Pound",
-        HKD: "Hong Kong Dollar",
-        HUF: "Hungarian Forint",
-        IDR: "Indonesian Rupiah",
-        ILS: "Israeli New Sheqel",
-        INR: "Indian Rupee",
-        ISK: "Icelandic Króna",
-        JPY: "Japanese Yen",
-        KRW: "South Korean Won",
-        MXN: "Mexican Peso",
-        MYR: "Malaysian Ringgit",
-        NOK: "Norwegian Krone",
-        NZD: "New Zealand Dollar",
-        PHP: "Philippine Peso",
-        PLN: "Polish Złoty",
-        RON: "Romanian Leu",
-        SEK: "Swedish Krona",
-        SGD: "Singapore Dollar",
-        THB: "Thai Baht",
-        TRY: "Turkish Lira",
-        USD: "United States Dollar",
-        ZAR: "South African Rand",
-      };
-
-      const selectElement = document.getElementById("toCurrency");
-
+    <script src="script.js"></script>
       
-      for (const currencyCode in currencies) {
-        const currencyName = currencies[currencyCode];
-        const optionElement = document.createElement("option");
-        optionElement.value = currencyCode;
-        optionElement.textContent = `${currencyCode} - ${currencyName}`;
-        selectElement.appendChild(optionElement);
-      }
-
-      document
-        .getElementById("convertButton")
-        .addEventListener("click", function () {
-          const amount = parseFloat(document.getElementById("amount").value);
-          const toCurrency = document.getElementById("toCurrency").value;
-
-          fetch(
-            `https://api.frankfurter.app/latest?amount=${amount}&from=USD&to=${toCurrency}`
-          )
-            .then((response) => response.json())
-            .then((data) => {
-              const convertedAmount = data.rates[toCurrency];
-              document.getElementById(
-                "result"
-              ).innerHTML = `${amount} USD is approximately ${convertedAmount} ${toCurrency}`;
-            })
-            .catch((error) => {
-              console.error("Error fetching exchange rate:", error);
-              document.getElementById("result").innerHTML =
-                "Error fetching exchange rate. Please try again later.";
-            });
-        });
-      fetch("https://api.frankfurter.app/latest?from=USD")
-        .then((response) => response.json())
-        .then((data) => {
-          const exchangeRates = data.rates;
-          const currencies = {
-            AUD: "Australian Dollar",
-            BGN: "Bulgarian Lev",
-            BRL: "Brazilian Real",
-            CAD: "Canadian Dollar",
-            CHF: "Swiss Franc",
-            CNY: "Chinese Renminbi Yuan",
-            CZK: "Czech Koruna",
-            DKK: "Danish Krone",
-            EUR: "Euro",
-            GBP: "British Pound",
-            HKD: "Hong Kong Dollar",
-            HUF: "Hungarian Forint",
-            IDR: "Indonesian Rupiah",
-            ILS: "Israeli New Sheqel",
-            INR: "Indian Rupee",
-            ISK: "Icelandic Króna",
-            JPY: "Japanese Yen",
-            KRW: "South Korean Won",
-            MXN: "Mexican Peso",
-            MYR: "Malaysian Ringgit",
-            NOK: "Norwegian Krone",
-            NZD: "New Zealand Dollar",
-            PHP: "Philippine Peso",
-            PLN: "Polish Złoty",
-            RON: "Romanian Leu",
-            SEK: "Swedish Krona",
-            SGD: "Singapore Dollar",
-            THB: "Thai Baht",
-            TRY: "Turkish Lira",
-            USD: "United States Dollar",
-            ZAR: "South African Rand",
-          };
-          const exchangeRatesList = document.getElementById("exchangeRates");
-          for (const currency in currencies) {
-            const listItem = document.createElement("li");
-            listItem.textContent = `${currencies[currency]} (${currency}): ${exchangeRates[currency]}`;
-            exchangeRatesList.appendChild(listItem);
-          }
-        })
-
-        .catch((error) => {
-          console.error("Error fetching exchange rates:", error);
-          const exchangeRatesList = document.getElementById("exchangeRates");
-          exchangeRatesList.textContent =
-            "Error fetching exchange rates. Please try again later.";
-        });
-    </script>
   </body>
 </html>
