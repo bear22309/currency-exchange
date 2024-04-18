@@ -13,6 +13,9 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
+document.addEventListener("DOMContentLoaded", function() {
+  
+
 
 fetch('https://api.frankfurter.app/latest?from=USD')
   .then(response => response.json())
@@ -74,5 +77,6 @@ fetch('https://api.frankfurter.app/latest?from=USD')
     const exchangeRatesList = document.getElementById('exchangeRates');
     exchangeRatesList.textContent = 'Error fetching exchange rates. Please try again later.';
   });
+});
 
 reportWebVitals();
