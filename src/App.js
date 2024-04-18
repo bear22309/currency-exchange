@@ -1,18 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import './App.css';
-
-const Home = () => {
-  return <h2>Currency</h2>;
-}
-
-const About = () => {
-  return <h2>Currency</h2>;
-}
-
-const Contact = () => {
-  return <h2>Currency</h2>;
-}
 
 const App = () => {
   return (
@@ -22,17 +10,13 @@ const App = () => {
         <nav>
           <ul>
             <li>
-            <button onclick="alert('Button clicked!')">Current currency</button>
+              <button onClick={() => alert('Button clicked!')}>Current currency</button>
             </li>
             <li>
-            <button onclick="alert('Button clicked!')">Current currency</button>
+              <button onClick={() => alert('Button clicked!')}>Current currency</button>
             </li>
-            
           </ul>
         </nav>
-        <Route path="/" exact component={Home} />
-        <Route path="/about/" component={About} />
-        <Route path="/contact/" component={Contact} />
       </div>
     </Router>
   );
