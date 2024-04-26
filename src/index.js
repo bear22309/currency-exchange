@@ -20,7 +20,6 @@ fetch('https://api.frankfurter.app/currencies')
     const fromCurrencySelect = document.getElementById("fromCurrency");
     const toCurrencySelect = document.getElementById("toCurrency");
 
-    // Populate currency dropdowns
     for (const currency in currencies) {
       const option = document.createElement('option');
       option.value = currency;
@@ -60,16 +59,32 @@ fetch('https://api.frankfurter.app/currencies')
 
 function fetchExchangeRates(fromCurrency, toCurrency) {
   const host = 'api.frankfurter.app';
+  const exchangeRatesList = document.getElementById("exchangeRates"); // Move inside the function
   return fetch(`https://${host}/latest?from=${fromCurrency}&to=${toCurrency}`)
     .then(response => response.json())
     .then(data => {
-      return data.rates[toCurrency];
+      exchangeRatesList.innerHTML = ''; // Clear existing content
+      for (const currency in data.rates) {
+        const listItem = document.createElement("li");
+        listItem.textContent = `${currency}: ${data.rates[currency]}`;
+        exchangeRatesList.appendChild(listItem);
+      }
     })
     .catch(error => {
       console.error('Error fetching exchange rates:', error);
-      throw error; 
+      exchangeRatesList.textContent = 'Error fetching exchange rates. Please try again later.';
     });
 }
 
-reportWebVitals();
+const fromCurrencySelect = document.getElementById("fromCurrency");
+const toCurrencySelect = document.getElementById("toCurrency");
 
+// Call the fetchExchangeRates function when the base currency changes
+fromCurrencySelect.addEventListener('change', () => {
+  convertButton.disabled = false;
+  const fromCurrency = fromCurrencySelect.value;
+  const toCurrency = toCurrencySelect.value;
+  fetchExchangeRates(fromCurrency, toCurrency);
+});
+
+reportWebVitals();
