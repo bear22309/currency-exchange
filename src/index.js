@@ -5,20 +5,20 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-// Define fetchExchangeRates function here
+
 function fetchExchangeRates(fromCurrency, toCurrency) {
   const host = 'api.frankfurter.app';
   const exchangeRatesList = document.getElementById("exchangeRates");
   return fetch(`https://${host}/latest?from=${fromCurrency}&to=${toCurrency}`)
     .then(response => response.json())
     .then(data => {
-      exchangeRatesList.innerHTML = ''; // Clear existing content
+      exchangeRatesList.innerHTML = ''; 
       for (const currency in data.rates) {
         const listItem = document.createElement("li");
         listItem.textContent = `${currency}: ${data.rates[currency]}`;
         exchangeRatesList.appendChild(listItem);
       }
-      return data.rates[toCurrency]; // Return the exchange rate
+      return data.rates[toCurrency]; 
     })
     .catch(error => {
       console.error('Error fetching exchange rates:', error);
@@ -32,7 +32,7 @@ createRoot(document.getElementById('root')).render(
   </React.StrictMode>
 );
 
-// Fetch currencies and set up event listeners after the initial render
+
 fetch('https://api.frankfurter.app/currencies')
   .then(response => response.json())
   .then(data => {
@@ -43,7 +43,7 @@ fetch('https://api.frankfurter.app/currencies')
     const toCurrencySelect = document.getElementById("toCurrency");
     const convertButton = document.getElementById("convertButton");
 
-    // Clear existing options before appending new ones
+    
     fromCurrencySelect.innerHTML = '';
     toCurrencySelect.innerHTML = '';
 
@@ -55,7 +55,7 @@ fetch('https://api.frankfurter.app/currencies')
       toCurrencySelect.appendChild(option.cloneNode(true));
     }
 
-    // Add event listeners
+    
     fromCurrencySelect.addEventListener('change', () => {
       const fromCurrency = fromCurrencySelect.value;
       const toCurrency = toCurrencySelect.value;
