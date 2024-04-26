@@ -5,6 +5,28 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+let convertButton;
+
+// Define fetchExchangeRates function here
+function fetchExchangeRates(fromCurrency, toCurrency) {
+  const host = 'api.frankfurter.app';
+  const exchangeRatesList = document.getElementById("exchangeRates"); // Move inside the function
+  return fetch(`https://${host}/latest?from=${fromCurrency}&to=${toCurrency}`)
+    .then(response => response.json())
+    .then(data => {
+      exchangeRatesList.innerHTML = ''; // Clear existing content
+      for (const currency in data.rates) {
+        const listItem = document.createElement("li");
+        listItem.textContent = `${currency}: ${data.rates[currency]}`;
+        exchangeRatesList.appendChild(listItem);
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching exchange rates:', error);
+      exchangeRatesList.textContent = 'Error fetching exchange rates. Please try again later.';
+    });
+}
+
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App />
@@ -35,14 +57,27 @@ fetch('https://api.frankfurter.app/currencies')
       convertButton.disabled = false;
     });
 
-    const convertButton = document.getElementById("convertButton");
+    convertButton = document.getElementById("convertButton");
+
     convertButton.addEventListener('click', () => {
+      const fromAmount = parseFloat(document.getElementById("fromAmount").value);
+      if (isNaN(fromAmount)) {
+        // Handle invalid input
+        console.error('Invalid input for amount');
+        return;
+      }
+      
       const fromCurrency = fromCurrencySelect.value;
       const toCurrency = toCurrencySelect.value;
-
+    
       fetchExchangeRates(fromCurrency, toCurrency)
         .then(rate => {
-          const fromAmount = document.getElementById("fromAmount").value;
+          if (rate === undefined || isNaN(rate)) {
+            // Handle invalid exchange rate
+            console.error('Invalid exchange rate:', rate);
+            return;
+          }
+          
           const toAmount = fromAmount * rate;
           document.getElementById("toAmount").value = toAmount.toFixed(2);
         })
@@ -52,29 +87,12 @@ fetch('https://api.frankfurter.app/currencies')
           exchangeRatesList.textContent = 'Error fetching exchange rates. Please try again later.';
         });
     });
+    
+    
   })
   .catch(error => {
     console.error('Error fetching currencies:', error);
   });
-
-function fetchExchangeRates(fromCurrency, toCurrency) {
-  const host = 'api.frankfurter.app';
-  const exchangeRatesList = document.getElementById("exchangeRates"); // Move inside the function
-  return fetch(`https://${host}/latest?from=${fromCurrency}&to=${toCurrency}`)
-    .then(response => response.json())
-    .then(data => {
-      exchangeRatesList.innerHTML = ''; // Clear existing content
-      for (const currency in data.rates) {
-        const listItem = document.createElement("li");
-        listItem.textContent = `${currency}: ${data.rates[currency]}`;
-        exchangeRatesList.appendChild(listItem);
-      }
-    })
-    .catch(error => {
-      console.error('Error fetching exchange rates:', error);
-      exchangeRatesList.textContent = 'Error fetching exchange rates. Please try again later.';
-    });
-}
 
 const fromCurrencySelect = document.getElementById("fromCurrency");
 const toCurrencySelect = document.getElementById("toCurrency");
