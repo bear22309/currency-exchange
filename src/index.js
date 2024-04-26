@@ -5,8 +5,6 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-let convertButton;
-
 // Define fetchExchangeRates function here
 function fetchExchangeRates(fromCurrency, toCurrency) {
   const host = 'api.frankfurter.app';
@@ -20,6 +18,7 @@ function fetchExchangeRates(fromCurrency, toCurrency) {
         listItem.textContent = `${currency}: ${data.rates[currency]}`;
         exchangeRatesList.appendChild(listItem);
       }
+      return data.rates[toCurrency]; // Return the exchange rate
     })
     .catch(error => {
       console.error('Error fetching exchange rates:', error);
@@ -57,12 +56,11 @@ fetch('https://api.frankfurter.app/currencies')
       convertButton.disabled = false;
     });
 
-    convertButton = document.getElementById("convertButton");
+    const convertButton = document.getElementById("convertButton");
 
     convertButton.addEventListener('click', () => {
       const fromAmount = parseFloat(document.getElementById("fromAmount").value);
       if (isNaN(fromAmount)) {
-        // Handle invalid input
         console.error('Invalid input for amount');
         return;
       }
@@ -73,8 +71,8 @@ fetch('https://api.frankfurter.app/currencies')
       fetchExchangeRates(fromCurrency, toCurrency)
         .then(rate => {
           if (rate === undefined || isNaN(rate)) {
-            // Handle invalid exchange rate
-            console.error('Invalid exchange rate:', rate);
+            console.error('Exchange rate not available for selected currencies');
+            document.getElementById("toAmount").value = 'Exchange rate not available';
             return;
           }
           
@@ -87,7 +85,6 @@ fetch('https://api.frankfurter.app/currencies')
           exchangeRatesList.textContent = 'Error fetching exchange rates. Please try again later.';
         });
     });
-    
     
   })
   .catch(error => {
