@@ -5,7 +5,13 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+const rootElement = document.getElementById('root');
 
+createRoot(rootElement).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
 function fetchExchangeRates(fromCurrency, toCurrency) {
   const host = 'api.frankfurter.app';
   const exchangeRatesList = document.getElementById("exchangeRates");
@@ -25,12 +31,6 @@ function fetchExchangeRates(fromCurrency, toCurrency) {
       exchangeRatesList.textContent = 'Error fetching exchange rates. Please try again later.';
     });
 }
-
-createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
 
 
 fetch('https://api.frankfurter.app/currencies')
@@ -99,5 +99,6 @@ fetch('https://api.frankfurter.app/currencies')
   .catch(error => {
     console.error('Error fetching currencies:', error);
   });
+  
 
 reportWebVitals();
