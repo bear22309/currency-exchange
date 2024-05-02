@@ -4,6 +4,10 @@ import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { Chart, registerables } from 'chart.js';
+import 'chartjs-adapter-date-fns'; 
+Chart.register(...registerables);
+
 
 const rootElement = document.getElementById('root');
 
