@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom'; // Import ReactDOM
+import { createRoot } from 'react-dom/client'; 
 import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
 import App from './App';
@@ -8,14 +8,12 @@ import { Chart, registerables } from 'chart.js';
 import 'chartjs-adapter-date-fns'; 
 Chart.register(...registerables);
 
-
 const rootElement = document.getElementById('root');
 
-ReactDOM.render(
+createRoot(rootElement).render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 );
 function fetchExchangeRates(fromCurrency, toCurrency) {
   const host = 'api.frankfurter.app';

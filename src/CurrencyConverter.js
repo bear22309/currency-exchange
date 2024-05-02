@@ -8,7 +8,7 @@ class CurrencyConverter extends React.Component {
   constructor(props) {
     super(props);
 
-    const params = new URLSearchParams(props.location.search);
+    const params = props.location ? new URLSearchParams(props.location.search) : null;
 
     this.state = {
       rate: 0,
