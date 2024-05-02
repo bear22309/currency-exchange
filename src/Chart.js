@@ -6,11 +6,20 @@ const ChartComponent = () => {
   const chartRef = useRef(null);
 
   useEffect(() => {
-    const labels = new Date().toISOString().split('T')[0];
-        const data = {
-          labels: labels,
-          datasets: [
-        
+    const generateDateLabels = () => {
+      const labels = [];
+      for (let i = 30; i > 0; i--) {
+        const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+        labels.push(date.toISOString().split('T')[0]);
+      }
+      return labels;
+    };
+
+    const labels = generateDateLabels();
+
+    const data = {
+      labels: labels,
+      datasets: [
         {
           label: 'Dataset 1',
           data: [65, 59, 80, 81, 56, 55, 40],
@@ -38,6 +47,14 @@ const ChartComponent = () => {
           title: {
             display: true,
             text: 'Chart.js Line Chart',
+          },
+        },
+        scales: {
+          x: {
+            type: 'time',
+            time: {
+              unit: 'day',
+            },
           },
         },
       },
