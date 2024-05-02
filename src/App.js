@@ -1,41 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
-import { ChartComponent } from './Chart'; 
+import CurrencyConverter from './CurrencyConverter'; // Import CurrencyConverter component
 
 const App = () => {
+  const [baseCurrency, setBaseCurrency] = useState('USD');
+  const [comparedCurrency, setComparedCurrency] = useState('EUR');
+
+  const handleBaseCurrencyChange = (event) => {
+    setBaseCurrency(event.target.value);
+  };
+
+  const handleComparedCurrencyChange = (event) => {
+    setComparedCurrency(event.target.value);
+  };
+
   return (
     <div>
-      <nav>
-        <a>Tony's Currency Exchange</a>
-      </nav>
-      <div className="container">
-        <h1>Currency Converter</h1>
-        
-        <label htmlFor="fromCurrency">Current Currency:</label>
-        <select id="fromCurrency"></select>
-        <input type="number" id="fromAmount" placeholder="Amount" />
-        <br />
-        <label htmlFor="toCurrency">Compared Currency:</label>
-        <select id="toCurrency"></select>
-        <input type="number" id="toAmount" placeholder="Amount" disabled />
-        <br />
-        <button id="convertButton">Convert</button>
-      </div>
-      <div className="container">
-        <h1>Exchange Rates</h1>
-        <ul id="exchangeRates"></ul>
-      </div>
-      
-      <div className="container">
-        <h1>Historical Rate Chart</h1>
-        <ChartComponent /> 
-      </div>
-      <footer>
-        <p>&copy; 2024 Tony's Currency Exchange</p>
-        <a href="https://www.linkedin.com/feed/">LinkedIn</a>
-      </footer>
+      {/* Your existing JSX */}
+      <CurrencyConverter /> {/* Use CurrencyConverter component here */}
+      {/* Your existing JSX */}
     </div>
   );
 }
 
 export default App;
+

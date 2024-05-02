@@ -1,5 +1,5 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client'; 
+import ReactDOM from 'react-dom'; // Import ReactDOM
 import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
 import App from './App';
@@ -11,10 +11,11 @@ Chart.register(...registerables);
 
 const rootElement = document.getElementById('root');
 
-createRoot(rootElement).render(
+ReactDOM.render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>
+  </React.StrictMode>,
+  document.getElementById('root')
 );
 function fetchExchangeRates(fromCurrency, toCurrency) {
   const host = 'api.frankfurter.app';
