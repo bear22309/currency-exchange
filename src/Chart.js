@@ -1,71 +1,150 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
+import axios from 'axios';
 
+const API_URL = 'https://api.frankfurter.app';
 
-const ChartComponent = () => {
-  const chartRef = useRef(null);
+const fetchExchangeRates = async (baseCurrency, comparedCurrency) => {
+  try {
+    const response = await axios.get(`${API_URL}/latest?from=${baseCurrency}&to=${comparedCurrency}`);
+    return response.data.rates;
+  } catch (error) {
+    console.error('Error fetching exchange rates:', error.message);
+    throw error;
+  }
+};
+
+const ExchangeRateComponent = () => {
+  const [baseCurrency, setBaseCurrency] = useState('USD');
+  const [comparedCurrency, setComparedCurrency] = useState('EUR');
+  const [exchangeRate, setExchangeRate] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const generateDateLabels = () => {
-      const labels = [];
-      for (let i = 30; i > 0; i--) {
-        const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
-        labels.push(date.toISOString().split('T')[0]);
+    const fetchRates = async () => {
+      try {
+        setLoading(true);
+        const rates = await fetchExchangeRates(baseCurrency, comparedCurrency);
+        setExchangeRate(rates[comparedCurrency]);
+        setLoading(false);
+      } catch (error) {
+        // Handle error
+        setLoading(false);
       }
-      return labels;
     };
 
-    const labels = generateDateLabels();
+    fetchRates();
+  }, [baseCurrency, comparedCurrency]);
 
-    const data = {
-      labels: labels,
-      datasets: [
-        {
-          label: 'Dataset 1',
-          data: [65, 59, 80, 81, 56, 55, 40],
-          borderColor: 'rgb(255, 99, 132)',
-          backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        },
-        {
-          label: 'Dataset 2',
-          data: [28, 48, 40, 19, 86, 27, 90],
-          borderColor: 'rgb(54, 162, 235)',
-          backgroundColor: 'rgba(54, 162, 235, 0.5)',
-        },
-      ],
+  const handleBaseCurrencyChange = (event) => {
+    setBaseCurrency(event.target.value);
+  };
+
+  const handleComparedCurrencyChange = (event) => {
+    setComparedCurrency(event.target.value);
+  };
+
+  return (
+    <div>
+      <label htmlFor="baseCurrency">Base Currency:</label>
+      <select id="baseCurrency" value={baseCurrency} onChange={handleBaseCurrencyChange}>
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+        {/* Add more currency options as needed */}
+      </select>
+
+      <label htmlFor="comparedCurrency">Compared Currency:</label>
+      <select id="comparedCurrency" value={comparedCurrency} onChange={handleComparedCurrencyChange}>
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+        {/* Add more currency options as needed */}
+      </select>
+
+      {/* Display exchange rate or loading indicator */}
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <p>Exchange Rate: {exchangeRate}</p>
+      )}
+    </div>
+  );
+};
+
+const ChartComponent = ({ baseCurrency, comparedCurrency }) => {
+  const chartRef = useRef(null);
+  const [chartData, setChartData] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch data from API_URL
+        const response = await fetch(`${API_URL}/latest?from=${baseCurrency}&to=${comparedCurrency}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch data: ${response.statusText}`);
+        }
+        const data = await response.json();
+        setChartData(data.rates); // Assuming data structure is { "YYYY-MM-DD": rate, ... }
+      } catch (error) {
+        console.error('Error fetching data:', error.message);
+      }
     };
 
-    const config = {
-      type: 'line',
-      data: data,
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-          title: {
-            display: true,
-            text: 'Chart.js Line Chart',
-          },
+    fetchData();
+  }, [baseCurrency, comparedCurrency]);
+
+  useEffect(() => {
+    if (chartData) {
+      const labels = Object.keys(chartData);
+      const data = Object.values(chartData);
+
+      const config = {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Currency Data',
+              data: data,
+              borderColor: 'rgb(75, 192, 192)',
+              tension: 0.1,
+            },
+          ],
         },
-        scales: {
-          x: {
-            type: 'time',
-            time: {
-              unit: 'day',
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top',
+            },
+            title: {
+              display: true,
+              text: 'Chart.js Line Chart',
+            },
+          },
+          scales: {
+            x: {
+              type: 'time',
+              time: {
+                unit: 'day',
+              },
+            },
+            y: {
+              title: {
+                display: true,
+                text: `1 ${baseCurrency} to ${comparedCurrency}`,
+              },
             },
           },
         },
-      },
-    };
+      };
 
-    const chartInstance = new Chart(chartRef.current, config);
+      const chartInstance = new Chart(chartRef.current, config);
 
-    return () => chartInstance.destroy();
-  }, []);
+      return () => chartInstance.destroy();
+    }
+  }, [chartData, baseCurrency, comparedCurrency]);
 
   return <canvas ref={chartRef} />;
 };
 
-export default ChartComponent;
+export { ExchangeRateComponent, ChartComponent };
