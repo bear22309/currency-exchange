@@ -77,13 +77,12 @@ const ChartComponent = ({ baseCurrency, comparedCurrency }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch data from API_URL
         const response = await fetch(`${API_URL}/latest?from=${baseCurrency}&to=${comparedCurrency}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch data: ${response.statusText}`);
         }
         const data = await response.json();
-        setChartData(data.rates); // Assuming data structure is { "YYYY-MM-DD": rate, ... }
+        setChartData(data.rates);
       } catch (error) {
         console.error('Error fetching data:', error.message);
       }
