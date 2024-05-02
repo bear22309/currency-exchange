@@ -1,4 +1,3 @@
-// CurrencyConverter.js
 import React, { useState, useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import { checkStatus, json } from './utils/fetchUtils';
@@ -15,53 +14,53 @@ const CurrencyConverter = () => {
   const chartRef = useRef();
 
   useEffect(() => {
+    const getRate = (base, quote) => {
+      setLoading(true);
+      fetch(`https://api.frankfurter.app/latest?from=${base}&to=${quote}`)
+        .then(checkStatus)
+        .then(json)
+        .then(data => {
+          if (data.error) {
+            throw new Error(data.error);
+          }
+
+          const rate = data.rates[quote];
+
+          setRate(rate);
+          setBaseValue(1);
+          setQuoteValue(Number((1 * rate).toFixed(3)));
+          setLoading(false);
+        })
+        .catch(error => console.error(error.message));
+    };
+
+    const getHistoricalRates = (base, quote) => {
+      const endDate = new Date().toISOString().split('T')[0];
+      const startDate = new Date(new Date().getTime() - (30 * 24 * 60 * 60 * 1000));
+
+      const labels = [];
+      for (let date = startDate; date <= new Date(); date.setDate(date.getDate() + 1)) {
+        labels.push(date.toISOString().split('T')[0]);
+      }
+
+      fetch(`https://api.frankfurter.app/${startDate.toISOString().split('T')[0]}..${endDate}?from=${base}&to=${quote}`)
+        .then(checkStatus)
+        .then(json)
+        .then(data => {
+          if (data.error) {
+            throw new Error(data.error);
+          }
+
+          const chartData = labels.map(label => data.rates[label]?.[quote] || null);
+          const chartLabel = `${base}/${quote}`;
+          buildChart(labels, chartData, chartLabel);
+        })
+        .catch(error => console.error(error.message));
+    };
+
     getRate(baseAcronym, quoteAcronym);
     getHistoricalRates(baseAcronym, quoteAcronym);
   }, [baseAcronym, quoteAcronym]);
-
-  const getRate = (base, quote) => {
-    setLoading(true);
-    fetch(`https://api.frankfurter.app/latest?from=${base}&to=${quote}`)
-      .then(checkStatus)
-      .then(json)
-      .then(data => {
-        if (data.error) {
-          throw new Error(data.error);
-        }
-
-        const rate = data.rates[quote];
-
-        setRate(rate);
-        setBaseValue(1);
-        setQuoteValue(Number((1 * rate).toFixed(3)));
-        setLoading(false);
-      })
-      .catch(error => console.error(error.message));
-  };
-
-  const getHistoricalRates = (base, quote) => {
-    const endDate = new Date().toISOString().split('T')[0];
-    const startDate = new Date(new Date().getTime() - (30 * 24 * 60 * 60 * 1000));
-
-    const labels = [];
-    for (let date = startDate; date <= new Date(); date.setDate(date.getDate() + 1)) {
-      labels.push(date.toISOString().split('T')[0]);
-    }
-
-    fetch(`https://api.frankfurter.app/${startDate.toISOString().split('T')[0]}..${endDate}?from=${base}&to=${quote}`)
-      .then(checkStatus)
-      .then(json)
-      .then(data => {
-        if (data.error) {
-          throw new Error(data.error);
-        }
-
-        const chartData = labels.map(label => data.rates[label]?.[quote] || null);
-        const chartLabel = `${base}/${quote}`;
-        buildChart(labels, chartData, chartLabel);
-      })
-      .catch(error => console.error(error.message));
-  };
 
   const buildChart = (labels, data, label) => {
     const chart = new Chart(chartRef.current.getContext("2d"), {
