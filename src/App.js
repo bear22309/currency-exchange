@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import ChartComponent from './Chart'; 
 
 const App = () => {
   return (
@@ -9,6 +10,7 @@ const App = () => {
       </nav>
       <div className="container">
         <h1>Currency Converter</h1>
+        
         <label htmlFor="fromCurrency">Current Currency:</label>
         <select id="fromCurrency"></select>
         <input type="number" id="fromAmount" placeholder="Amount" />
@@ -22,6 +24,11 @@ const App = () => {
       <div className="container">
         <h1>Exchange Rates</h1>
         <ul id="exchangeRates"></ul>
+      </div>
+      
+      <div className="container">
+        <h1>Historical Rate Chart</h1>
+        <ChartComponent /> 
       </div>
       <footer>
         <p>&copy; 2024 Tony's Currency Exchange</p>
