@@ -6,22 +6,13 @@ const App = () => {
   const [baseCurrency, setBaseCurrency] = useState('USD');
   const [comparedCurrency, setComparedCurrency] = useState('EUR');
 
-  const handleBaseCurrencyChange = (event) => {
-    setBaseCurrency(event.target.value);
-  };
-
-  const handleComparedCurrencyChange = (event) => {
-    setComparedCurrency(event.target.value);
-  };
-
   return (
     <div>
       {/* Your existing JSX */}
-      <CurrencyConverter /> {/* Use CurrencyConverter component here */}
+      <CurrencyConverter baseCurrency={baseCurrency} comparedCurrency={comparedCurrency} /> {/* Pass state variables as props */}
       {/* Your existing JSX */}
     </div>
   );
 }
 
 export default App;
-
