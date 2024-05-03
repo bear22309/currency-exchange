@@ -3,8 +3,9 @@ import './App.css';
 import CurrencyConverter from './CurrencyConverter'; // Import CurrencyConverter component
 
 const App = () => {
-  const [baseCurrency, setBaseCurrency] = useState('USD');
-  const [comparedCurrency, setComparedCurrency] = useState('EUR');
+  // State variables to hold base and compared currencies
+  const [baseCurrency] = useState('USD');
+  const [comparedCurrency] = useState('EUR');
 
   return (
     <div>
