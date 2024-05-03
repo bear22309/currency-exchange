@@ -60,6 +60,11 @@ const CurrencyConverter = () => {
   }, [baseAcronym, quoteAcronym]);
 
   const buildChart = (labels, data, label) => {
+    const existingChart = Chart.getChart(chartRef.current);
+    if (existingChart) {
+      existingChart.destroy();
+    }
+  
     const chart = new Chart(chartRef.current.getContext("2d"), {
       type: 'line',
       data: {
@@ -78,7 +83,7 @@ const CurrencyConverter = () => {
       }
     });
   };
-
+  
   const toBase = (amount, rate) => amount * (1 / rate);
 
   const toQuote = (amount, rate) => amount * rate;
