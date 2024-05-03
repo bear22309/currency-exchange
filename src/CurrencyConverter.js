@@ -15,25 +15,25 @@ const CurrencyConverter = () => {
 
   useEffect(() => {
     const getRate = (base, quote) => {
-      setLoading(true);
-      fetch(`https://api.frankfurter.app/latest?from=${base}&to=${quote}`)
-        .then(checkStatus)
-        .then(json)
-        .then(data => {
-          if (data.error) {
-            throw new Error(data.error);
-          }
-
-          const rate = data.rates[quote];
-
-          setRate(rate);
-          setBaseValue(1);
-          setQuoteValue(Number((1 * rate).toFixed(3)));
-          setLoading(false);
-        })
-        .catch(error => console.error(error.message));
-    };
-
+        setLoading(true);
+        fetch(`https://api.frankfurter.app/currencies`)
+          .then(checkStatus)
+          .then(json)
+          .then(data => {
+            if (data.error) {
+              throw new Error(data.error);
+            }
+      
+            const rate = data.rates[quote];
+      
+            setRate(rate);
+            setBaseValue(1);
+            setQuoteValue(Number((1 * rate).toFixed(3)));
+            setLoading(false);
+          })
+          .catch(error => console.error(error.message));
+      };
+      
     const getHistoricalRates = (base, quote) => {
         const endDate = new Date().toISOString().split('T')[0];
         const startDate = '2024-04-02'; // Adjust start date as needed
