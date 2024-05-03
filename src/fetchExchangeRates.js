@@ -1,4 +1,3 @@
-// fetchExchangeRates.js
 function fetchExchangeRates(fromCurrency, toCurrency) {
     const host = 'api.frankfurter.app';
     const exchangeRatesList = document.getElementById("exchangeRates");
@@ -28,4 +27,5 @@ function fetchExchangeRates(fromCurrency, toCurrency) {
   
   // Export the fetchExchangeRates function
   export { fetchExchangeRates };
+
   
