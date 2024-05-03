@@ -36,7 +36,7 @@ const CurrencyConverter = () => {
       
     const getHistoricalRates = (base, quote) => {
         const endDate = new Date().toISOString().split('T')[0];
-        const startDate = '2024-04-02'; // Adjust start date as needed
+        const startDate = '2024-04-02'; 
       
         fetch(`https://api.frankfurter.app/${startDate}..${endDate}?from=${base}&to=${quote}`)
           .then(checkStatus)
