@@ -13,47 +13,46 @@ const CurrencyConverter = () => {
 
   const chartRef = useRef();
 
+  const getHistoricalRates = (base, quote) => {
+    const endDate = new Date().toISOString().split('T')[0];
+    const startDate = '2024-04-02';
+
+    fetch(`https://api.frankfurter.app/${startDate}..${endDate}?from=${base}&to=${quote}`)
+      .then(checkStatus)
+      .then(json)
+      .then(data => {
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
+        const chartData = Object.values(data.rates);
+        const labels = Object.keys(data.rates);
+        const chartLabel = `${base}/${quote}`;
+        buildChart(labels, chartData, chartLabel);
+      })
+      .catch(error => console.error(error.message));
+  };
+
   useEffect(() => {
     const getRate = (base, quote) => {
-        setLoading(true);
-        fetch(`https://api.frankfurter.app/currencies`)
-          .then(checkStatus)
-          .then(json)
-          .then(data => {
-            if (data.error) {
-              throw new Error(data.error);
-            }
-      
-            const rate = data.rates[quote];
-      
-            setRate(rate);
-            setBaseValue(1);
-            setQuoteValue(Number((1 * rate).toFixed(3)));
-            setLoading(false);
-          })
-          .catch(error => console.error(error.message));
-      };
-      
-    const getHistoricalRates = (base, quote) => {
-        const endDate = new Date().toISOString().split('T')[0];
-        const startDate = '2024-04-02'; 
-      
-        fetch(`https://api.frankfurter.app/${startDate}..${endDate}?from=${base}&to=${quote}`)
-          .then(checkStatus)
-          .then(json)
-          .then(data => {
-            if (data.error) {
-              throw new Error(data.error);
-            }
-      
-            const chartData = Object.values(data.rates);
-            const labels = Object.keys(data.rates);
-            const chartLabel = `${base}/${quote}`;
-            buildChart(labels, chartData, chartLabel);
-          })
-          .catch(error => console.error(error.message));
-      };
-      
+      setLoading(true);
+      fetch(`https://api.frankfurter.app/currencies`)
+        .then(checkStatus)
+        .then(json)
+        .then(data => {
+          console.log('Rates data:', data.rates);
+          if (data.error) {
+            throw new Error(data.error);
+          }
+
+          const rate = data.rates[quote];
+          setRate(rate);
+          setBaseValue(1);
+          setQuoteValue(Number((1 * rate).toFixed(3)));
+          setLoading(false);
+        })
+        .catch(error => console.error(error.message));
+    };
 
     getRate(baseAcronym, quoteAcronym);
     getHistoricalRates(baseAcronym, quoteAcronym);
@@ -64,7 +63,7 @@ const CurrencyConverter = () => {
     if (existingChart) {
       existingChart.destroy();
     }
-  
+
     const chart = new Chart(chartRef.current.getContext("2d"), {
       type: 'line',
       data: {
@@ -83,7 +82,7 @@ const CurrencyConverter = () => {
       }
     });
   };
-  
+
   const toBase = (amount, rate) => amount * (1 / rate);
 
   const toQuote = (amount, rate) => amount * rate;
@@ -108,8 +107,8 @@ const CurrencyConverter = () => {
   };
 
   const changeQuoteAcronym = event => {
-    const quoteAcronym = event.target.value;
-    setQuoteAcronym(quoteAcronym);
+    const newQuoteAcronym = event.target.value;
+    setQuoteAcronym(newQuoteAcronym);
   };
 
   const changeQuoteValue = event => {
@@ -150,12 +149,12 @@ const CurrencyConverter = () => {
               </div>
             </div>
             <input
-              id="base"
+              id="baseInput"
               className="form-control form-control-lg"
               value={baseValue}
               onChange={changeBaseValue}
               type="number"
-            />
+              />
           </div>
           <small className="text-secondary">
             {currencies[baseAcronym].name}
