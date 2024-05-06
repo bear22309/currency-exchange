@@ -25,14 +25,20 @@ const CurrencyConverter = () => {
           throw new Error(data.error);
         }
 
-        const chartData = Object.values(data.rates);
-        const labels = Object.keys(data.rates);
+        const chartData = [];
+        const chartLabels = [];
+        for (const date in data.rates) {
+          if (data.rates.hasOwnProperty(date)) {
+            chartLabels.push(date);
+            chartData.push(data.rates[date][quote]);
+          }
+        }
         const chartLabel = `${base}/${quote}`;
-        buildChart(labels, chartData, chartLabel);
+        buildChart(chartLabels, chartData, chartLabel);
       })
       .catch(error => console.error(error.message));
   };
-
+  
   useEffect(() => {
     const getRate = (base, quote) => {
       setLoading(true);
