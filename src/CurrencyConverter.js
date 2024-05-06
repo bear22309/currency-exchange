@@ -40,7 +40,8 @@ const CurrencyConverter = () => {
         .then(checkStatus)
         .then(json)
         .then(data => {
-          console.log('Rates data:', data.rates);
+          console.log('API Response:', data); // Log the entire response data
+      console.log('Rates data:', data.rates); // Log rates data
           if (data.error) {
             throw new Error(data.error);
           }
