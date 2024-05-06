@@ -38,32 +38,6 @@ const CurrencyConverter = () => {
       })
       .catch(error => console.error(error.message));
   };
-  
-  useEffect(() => {
-    const getRate = (base, quote) => {
-      setLoading(true);
-      fetch(`https://api.frankfurter.app/currencies`)
-        .then(checkStatus)
-        .then(json)
-        .then(data => {
-          console.log('API Response:', data); // Log the entire response data
-      console.log('Rates data:', data.rates); // Log rates data
-          if (data.error) {
-            throw new Error(data.error);
-          }
-
-          const rate = data.rates[quote];
-          setRate(rate);
-          setBaseValue(1);
-          setQuoteValue(Number((1 * rate).toFixed(3)));
-          setLoading(false);
-        })
-        .catch(error => console.error(error.message));
-    };
-
-    getRate(baseAcronym, quoteAcronym);
-    getHistoricalRates(baseAcronym, quoteAcronym);
-  }, [baseAcronym, quoteAcronym]);
 
   const buildChart = (labels, data, label) => {
     const existingChart = Chart.getChart(chartRef.current);
@@ -90,6 +64,33 @@ const CurrencyConverter = () => {
     });
   };
 
+  useEffect(() => {
+    const getRate = (base, quote) => {
+      setLoading(true);
+      fetch(`https://api.frankfurter.app/currencies`)
+        .then(checkStatus)
+        .then(json)
+        .then(data => {
+          console.log('API Response:', data); 
+          console.log('Rates data:', data.rates); 
+          if (data.error) {
+            throw new Error(data.error);
+          }
+  
+          const rate = data.rates[quote];
+          setRate(rate);
+          setBaseValue(1);
+          setQuoteValue(Number((1 * rate).toFixed(3)));
+          setLoading(false);
+        })
+        .catch(error => console.error(error.message));
+    };
+  
+    getRate(baseAcronym, quoteAcronym);
+    getHistoricalRates(baseAcronym, quoteAcronym);
+  }, [baseAcronym, quoteAcronym]); 
+  
+
   const toBase = (amount, rate) => amount * (1 / rate);
 
   const toQuote = (amount, rate) => amount * rate;
@@ -105,18 +106,15 @@ const CurrencyConverter = () => {
   const changeBaseAcronym = event => {
     const baseAcronym = event.target.value;
     setBaseAcronym(baseAcronym);
+    getHistoricalRates(baseAcronym, quoteAcronym); 
   };
-
-  const changeBaseValue = event => {
-    const quoteValue = convert(event.target.value, rate, toQuote);
-    setBaseValue(event.target.value);
-    setQuoteValue(quoteValue);
-  };
-
+  
   const changeQuoteAcronym = event => {
     const newQuoteAcronym = event.target.value;
     setQuoteAcronym(newQuoteAcronym);
+    getHistoricalRates(baseAcronym, newQuoteAcronym); 
   };
+  
 
   const changeQuoteValue = event => {
     const baseValue = convert(event.target.value, rate, toBase);
