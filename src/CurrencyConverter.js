@@ -44,7 +44,7 @@ const CurrencyConverter = () => {
     if (existingChart) {
       existingChart.destroy();
     }
-
+    // @ts-ignore
     const chart = new Chart(chartRef.current.getContext("2d"), {
       type: 'line',
       data: {
@@ -92,7 +92,7 @@ const CurrencyConverter = () => {
   
 
   const toBase = (amount, rate) => amount * (1 / rate);
-
+  // @ts-ignore
   const toQuote = (amount, rate) => amount * rate;
 
   const convert = (amount, rate, equation) => {
@@ -112,7 +112,12 @@ const CurrencyConverter = () => {
   const changeQuoteAcronym = event => {
     const newQuoteAcronym = event.target.value;
     setQuoteAcronym(newQuoteAcronym);
-    getHistoricalRates(baseAcronym, newQuoteAcronym); 
+    getHistoricalRates(baseAcronym, newQuoteAcronym);
+  };
+  
+  const changeBaseValue = event => {
+    const newValue = event.target.value; 
+    setBaseValue(newValue); 
   };
   
 
