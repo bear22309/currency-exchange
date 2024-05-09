@@ -76,7 +76,7 @@ const CurrencyConverter = () => {
           if (data.error) {
             throw new Error(data.error);
           }
-  
+          console.log(data);
           const rate = data.rates[quote];
           setRate(rate);
           setBaseValue(1);
@@ -127,11 +127,20 @@ const CurrencyConverter = () => {
     setBaseValue(baseValue);
   };
 
-  const currencyOptions = Object.keys(currencies).map(currencyAcronym => (
-    <option key={currencyAcronym} value={currencyAcronym}>
-      {currencyAcronym} ({currencies[currencyAcronym].name})
-    </option>
-  ));
+  const currencyOptions = Object.keys(currencies).map(currencyAcronym => {
+    let id = '';
+    if (currencyAcronym === ' ') {
+      id = 'fromCurrency';
+    } else if (currencyAcronym === ' ') {
+      id = 'toCurrency';
+    }
+    return (
+      <option key={currencyAcronym} value={currencyAcronym} id={id}>
+        {currencyAcronym} ({currencies[currencyAcronym].name})
+      </option>
+    );
+  });
+  
 
   return (
     <React.Fragment>
