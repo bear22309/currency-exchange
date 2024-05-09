@@ -13,9 +13,9 @@ const CurrencyConverter = () => {
   const [chartReady, setChartReady] = useState(false); 
   const chartRef = useRef();
 
+  const startDate = "2024-04-02";
+  const endDate = new Date().toISOString().split("T") [0];
   const getHistoricalRates = (base, quote) => {
-    const startDate = '2024-04-02';
-    const endDate = new Date().toISOString().split('T')[0];
     const apiUrl = `https://api.frankfurter.app/${startDate}..${endDate}?from=${base}&to=${quote}`;
 
     fetch(`https://api.frankfurter.app/${startDate}..${endDate}?from=${base}&to=${quote}`)
@@ -71,17 +71,16 @@ const CurrencyConverter = () => {
   useEffect(() => {
     const getRate = (base, quote) => {
       setLoading(true);
-      fetch(`https://api.frankfurter.app/currencies`)
+      fetch(`https://api.frankfurter.app/${startDate}..${endDate}?from=${base}&to=${quote}`)
         .then(checkStatus)
         .then(json)
         .then(data => {
-          console.log('API Response:', data); 
-          console.log('Rates data:', data.rates); 
+          console.log("API Response:", {data}); 
           if (data.error) {
             throw new Error(data.error);
           }
-          console.log(data);
-          const rate = data.rates[quote];
+          
+          const rate = data.rates[endDate] [quote];
           setRate(rate);
           setBaseValue(1);
           setQuoteValue(Number((1 * rate).toFixed(3)));
