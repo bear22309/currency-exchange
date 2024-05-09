@@ -108,14 +108,17 @@ const CurrencyConverter = () => {
   };
   
   const changeBaseValue = event => {
-    const newValue = event.target.value; 
-    setBaseValue(newValue); 
-  };
+    const newValue = parseFloat(event.target.value);
+    setBaseValue(newValue);
+    const newQuoteValue = newValue * rate;
+    setQuoteValue(newQuoteValue);
+};
+
   
   const changeQuoteValue = event => {
-    const baseValue = convert(event.target.value, rate, toBase);
+    //const baseValue = convert(event.target.value, rate, toBase);
     setQuoteValue(event.target.value);
-    setBaseValue(baseValue);
+    //setBaseValue(baseValue);
   };
 
   const currencyOptions = Object.keys(currencies).map(currencyAcronym => {
