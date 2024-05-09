@@ -10,7 +10,7 @@ const CurrencyConverter = () => {
   const [quoteAcronym, setQuoteAcronym] = useState('JPY');
   const [quoteValue, setQuoteValue] = useState(0);
   const [loading, setLoading] = useState(false);
-
+  const [chartReady, setChartReady] = useState(false); 
   const chartRef = useRef();
 
   const getHistoricalRates = (base, quote) => {
@@ -35,11 +35,13 @@ const CurrencyConverter = () => {
         }
         const chartLabel = `${base}/${quote}`;
         buildChart(chartLabels, chartData, chartLabel);
+        setChartReady(true); 
       })
       .catch(error => console.error(error.message));
   };
 
   const buildChart = (labels, data, label) => {
+    if (!chartRef.current) return; 
     const existingChart = Chart.getChart(chartRef.current);
     if (existingChart) {
       existingChart.destroy();
@@ -85,23 +87,11 @@ const CurrencyConverter = () => {
         })
         .catch(error => console.error(error.message));
     };
-  
+
     getRate(baseAcronym, quoteAcronym);
     getHistoricalRates(baseAcronym, quoteAcronym);
+
   }, [baseAcronym, quoteAcronym]); 
-  
-
-  const toBase = (amount, rate) => amount * (1 / rate);
-  // @ts-ignore
-  const toQuote = (amount, rate) => amount * rate;
-
-  const convert = (amount, rate, equation) => {
-    const input = parseFloat(amount);
-    if (Number.isNaN(input)) {
-      return '';
-    }
-    return equation(input, rate).toFixed(3);
-  };
 
   const changeBaseAcronym = event => {
     const baseAcronym = event.target.value;
@@ -120,7 +110,6 @@ const CurrencyConverter = () => {
     setBaseValue(newValue); 
   };
   
-
   const changeQuoteValue = event => {
     const baseValue = convert(event.target.value, rate, toBase);
     setQuoteValue(event.target.value);
@@ -141,7 +130,6 @@ const CurrencyConverter = () => {
     );
   });
   
-
   return (
     <React.Fragment>
       <div className="text-center p-3">
