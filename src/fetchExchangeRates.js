@@ -11,23 +11,19 @@ function fetchExchangeRates(fromCurrency, toCurrency) {
   return fetch(`https://${host}/latest?from=${fromCurrency}&to=${toCurrency}`)
     .then(response => response.json())
     .then(data => {
-      if (exchangeRatesList) { // Check again before updating
-        exchangeRatesList.innerHTML = ''; 
-        for (const currency in data.rates) {
-          const listItem = document.createElement("li");
-          listItem.textContent = `${currency}: ${data.rates[currency]}`;
-          exchangeRatesList.appendChild(listItem);
-        }
+      exchangeRatesList.innerHTML = ''; 
+      for (const currency in data.rates) {
+        const listItem = document.createElement("li");
+        listItem.textContent = `${currency}: ${data.rates[currency]}`;
+        exchangeRatesList.appendChild(listItem);
       }
       return data.rates[toCurrency]; 
     })
     .catch(error => {
       console.error('Error fetching exchange rates:', error);
-      if (exchangeRatesList) { // Check again before updating
-        exchangeRatesList.textContent = 'Error fetching exchange rates. Please try again later.';
-      }
+      exchangeRatesList.textContent = 'Error fetching exchange rates. Please try again later.';
+      throw error;
     });
 }
-
-// Export the fetchExchangeRates function
+  
 export { fetchExchangeRates };

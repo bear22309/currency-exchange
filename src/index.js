@@ -17,35 +17,13 @@ createRoot(rootElement).render(
   </React.StrictMode>
 );
 
-// Fetch the complete list of currencies from the API
-fetch('https://api.frankfurter.app/currencies')
-  .then(response => response.json())
-  .then(data => {
-    console.log('API Response:', data);
-    const currencies = data;
-
-    // Update the first set of drop-down menus
-    const fromCurrencySelect = document.getElementById("fromCurrency");
-    const toCurrencySelect = document.getElementById("toCurrency");
-
-    // Clear existing options
-    fromCurrencySelect.innerHTML = '';
-    toCurrencySelect.innerHTML = '';
-
-    // Add options for each currency
-    for (const currency in currencies) {
-      const option = document.createElement('option');
-      option.value = currency;
-      option.textContent = `${currency} (${currencies[currency]})`;
-      fromCurrencySelect.appendChild(option.cloneNode(true));
-      toCurrencySelect.appendChild(option.cloneNode(true));
-    }
-
-    // Trigger event listeners if needed
-    // ...
+// Fetch exchange rates and update exchangeRates element
+fetchExchangeRates('USD', 'JPY')
+  .then(rate => {
+    console.log('Exchange rate:', rate);
   })
   .catch(error => {
-    console.error('Error fetching currencies:', error);
+    console.error('Error fetching exchange rates:', error);
   });
 
 reportWebVitals();
