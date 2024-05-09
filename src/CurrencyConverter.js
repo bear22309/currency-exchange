@@ -14,13 +14,15 @@ const CurrencyConverter = () => {
   const chartRef = useRef();
 
   const getHistoricalRates = (base, quote) => {
-    const endDate = new Date().toISOString().split('T')[0];
     const startDate = '2024-04-02';
+    const endDate = new Date().toISOString().split('T')[0];
+    const apiUrl = `https://api.frankfurter.app/${startDate}..${endDate}?from=${base}&to=${quote}`;
 
     fetch(`https://api.frankfurter.app/${startDate}..${endDate}?from=${base}&to=${quote}`)
       .then(checkStatus)
       .then(json)
       .then(data => {
+        console.log(data);
         if (data.error) {
           throw new Error(data.error);
         }
