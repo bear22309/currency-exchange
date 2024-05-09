@@ -2,7 +2,7 @@ function fetchExchangeRates(fromCurrency, toCurrency) {
   const host = 'api.frankfurter.app';
   const exchangeRatesList = document.getElementById("exchangeRates");
 
-  // Add null check
+
   if (!exchangeRatesList) {
     console.error('Exchange rates list element not found');
     return Promise.reject('Exchange rates list element not found');

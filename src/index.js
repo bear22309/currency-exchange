@@ -17,7 +17,7 @@ createRoot(rootElement).render(
   </React.StrictMode>
 );
 
-// Fetch exchange rates and update exchangeRates element
+
 fetchExchangeRates('USD', 'JPY')
   .then(rate => {
     console.log('Exchange rate:', rate);
