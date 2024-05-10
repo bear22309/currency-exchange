@@ -80,28 +80,31 @@ const CurrencyConverter = () => {
             throw new Error(data.error);
           }
           
+          let closestDate = null;
+          let closestRate = null;
           
-          let rate = null;
           for (const date in data.rates) {
-            if (data.rates.hasOwnProperty(date)) {
-              if (data.rates[date][quote]) {
-                rate = data.rates[date][quote];
-                break;
-              }
+            
+              const rateDate = new Date(date);
+              if (!closestDate || rateDate > closestDate) {
+                closestDate = rateDate;
+                closestRate = data.rates[date][quote];
+              
             }
           }
     
-          if (rate === null) {
+          if (closestRate === null) {
             throw new Error(`Rate for ${base}/${quote} not found.`);
           }
     
-          setRate(rate);
+          setRate(closestRate);
           setBaseValue(1);
-          setQuoteValue(Number((1 * rate).toFixed(3)));
+          setQuoteValue(Number((1 * closestRate).toFixed(3)));
           setLoading(false);
         })
         .catch(error => console.error(error.message));
     };
+    
     
 
     getRate(baseAcronym, quoteAcronym);
