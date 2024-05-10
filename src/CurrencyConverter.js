@@ -75,12 +75,26 @@ const CurrencyConverter = () => {
         .then(checkStatus)
         .then(json)
         .then(data => {
-          console.log("API Response:", {data}); 
+          console.log("API Response:", data); 
           if (data.error) {
             throw new Error(data.error);
           }
           
-          const rate = data.rates[endDate] [quote];
+          
+          let rate = null;
+          for (const date in data.rates) {
+            if (data.rates.hasOwnProperty(date)) {
+              if (data.rates[date][quote]) {
+                rate = data.rates[date][quote];
+                break;
+              }
+            }
+          }
+    
+          if (rate === null) {
+            throw new Error(`Rate for ${base}/${quote} not found.`);
+          }
+    
           setRate(rate);
           setBaseValue(1);
           setQuoteValue(Number((1 * rate).toFixed(3)));
@@ -88,6 +102,7 @@ const CurrencyConverter = () => {
         })
         .catch(error => console.error(error.message));
     };
+    
 
     getRate(baseAcronym, quoteAcronym);
     getHistoricalRates(baseAcronym, quoteAcronym);
