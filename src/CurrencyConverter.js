@@ -10,15 +10,23 @@ const CurrencyConverter = () => {
   const [quoteAcronym, setQuoteAcronym] = useState('JPY');
   const [quoteValue, setQuoteValue] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [chartReady, setChartReady] = useState(false); 
+  const [chartReady, setChartReady] = useState(false);
   const chartRef = useRef();
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
-  const startDate = "2024-04-02";
-  const endDate = new Date().toISOString().split("T") [0];
+  useEffect(() => {
+    const currentDate = new Date();
+    const previousDate = new Date();
+    previousDate.setDate(currentDate.getDate() - 30); 
+    setStartDate(previousDate.toISOString().split("T")[0]);
+    setEndDate(currentDate.toISOString().split("T")[0]); 
+  }, []);
+
   const getHistoricalRates = (base, quote) => {
     const apiUrl = `https://api.frankfurter.app/${startDate}..${endDate}?from=${base}&to=${quote}`;
 
-    fetch(`https://api.frankfurter.app/${startDate}..${endDate}?from=${base}&to=${quote}`)
+    fetch(apiUrl)
       .then(checkStatus)
       .then(json)
       .then(data => {
@@ -37,13 +45,13 @@ const CurrencyConverter = () => {
         }
         const chartLabel = `${base}/${quote}`;
         buildChart(chartLabels, chartData, chartLabel);
-        setChartReady(true); 
+        setChartReady(true);
       })
       .catch(error => console.error(error.message));
   };
 
   const buildChart = (labels, data, label) => {
-    if (!chartRef.current) return; 
+    if (!chartRef.current) return;
     const existingChart = Chart.getChart(chartRef.current);
     if (existingChart) {
       existingChart.destroy();
@@ -75,28 +83,26 @@ const CurrencyConverter = () => {
         .then(checkStatus)
         .then(json)
         .then(data => {
-          console.log("API Response:", data); 
+          console.log("API Response:", data);
           if (data.error) {
             throw new Error(data.error);
           }
-          
+
           let closestDate = null;
           let closestRate = null;
-          
+
           for (const date in data.rates) {
-            
-              const rateDate = new Date(date);
-              if (!closestDate || rateDate > closestDate) {
-                closestDate = rateDate;
-                closestRate = data.rates[date][quote];
-              
+            const rateDate = new Date(date);
+            if (!closestDate || rateDate > closestDate) {
+              closestDate = rateDate;
+              closestRate = data.rates[date][quote];
             }
           }
-    
+
           if (closestRate === null) {
             throw new Error(`Rate for ${base}/${quote} not found.`);
           }
-    
+
           setRate(closestRate);
           setBaseValue(1);
           setQuoteValue(Number((1 * closestRate).toFixed(3)));
@@ -104,38 +110,36 @@ const CurrencyConverter = () => {
         })
         .catch(error => console.error(error.message));
     };
-    
-    
 
     getRate(baseAcronym, quoteAcronym);
     getHistoricalRates(baseAcronym, quoteAcronym);
 
-  }, [baseAcronym, quoteAcronym]); 
+  }, [baseAcronym, quoteAcronym, startDate, endDate]);
 
   const changeBaseAcronym = event => {
     const baseAcronym = event.target.value;
     setBaseAcronym(baseAcronym);
-    getHistoricalRates(baseAcronym, quoteAcronym); 
+    getHistoricalRates(baseAcronym, quoteAcronym);
   };
-  
+
   const changeQuoteAcronym = event => {
     const newQuoteAcronym = event.target.value;
     setQuoteAcronym(newQuoteAcronym);
     getHistoricalRates(baseAcronym, newQuoteAcronym);
   };
-  
+
   const changeBaseValue = event => {
     const newValue = parseFloat(event.target.value);
     setBaseValue(newValue);
     const newQuoteValue = newValue * rate;
     setQuoteValue(newQuoteValue);
-};
+  };
 
-  
   const changeQuoteValue = event => {
-    //const baseValue = convert(event.target.value, rate, toBase);
-    setQuoteValue(event.target.value);
-    //setBaseValue(baseValue);
+    const newQuoteValue = parseFloat(event.target.value);
+    setQuoteValue(newQuoteValue);
+    const newBaseValue = newQuoteValue / rate;
+    setBaseValue(newBaseValue);
   };
 
   const currencyOptions = Object.keys(currencies).map(currencyAcronym => {
@@ -151,7 +155,7 @@ const CurrencyConverter = () => {
       </option>
     );
   });
-  
+
   return (
     <React.Fragment>
       <div className="text-center p-3">
@@ -183,7 +187,7 @@ const CurrencyConverter = () => {
               value={baseValue}
               onChange={changeBaseValue}
               type="number"
-              />
+            />
           </div>
           <small className="text-secondary">
             {currencies[baseAcronym].name}
